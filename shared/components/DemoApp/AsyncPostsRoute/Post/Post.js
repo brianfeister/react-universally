@@ -1,4 +1,4 @@
-import React, { PropTypes } from 'react';
+import PropTypes, { string } from 'prop-types';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { withJob } from 'react-jobs';

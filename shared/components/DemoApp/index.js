@@ -28,6 +28,8 @@ class DemoApp extends Component {
     }
   }
 
+  // this.props.styleManager/theme are passed in via component properties,
+  // @TODO - find a "non-magical" way to do this
   render(styleManager = this.props.styleManager, theme = this.props.theme) {
     return (
       <Paper>
