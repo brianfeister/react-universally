@@ -91,7 +91,6 @@ export default function reactApplicationMiddleware(request, response) {
   // Pass our app into the react-async-component helper so that any async
   // components are resolved for the render.
   asyncBootstrapper(app).then(() => {
-    // We can now render our app
     const appString = renderToString(app);
 
     const html = renderToStaticMarkup(
@@ -99,6 +98,8 @@ export default function reactApplicationMiddleware(request, response) {
         reactAppString={appString}
         nonce={nonce}
         helmet={Helmet.rewind()}
+        storeState={store.getState()}
+        routerState={reactRouterContext}
         jobsState={jobContext.getState()}
         asyncComponentsState={asyncContext.getState()}
       />,
@@ -112,15 +113,6 @@ export default function reactApplicationMiddleware(request, response) {
       return;
     }
 
-    response
-      .status(
-        reactRouterContext.missed
-          ? // If the renderResult contains a "missed" match then we set a 404 code.
-            // Our App component will handle the rendering of an Error404 view.
-            404
-          : // Otherwise everything is all good and we send a 200 OK status.
-            200,
-      )
-      .send(`<!DOCTYPE html>${html}`);
+    response.status(reactRouterContext.status || 200).send(`<!DOCTYPE html>${html}`);
   });
 }
