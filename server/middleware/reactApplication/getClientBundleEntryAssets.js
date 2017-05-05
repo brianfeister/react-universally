@@ -36,6 +36,8 @@ export default function getClientBundleEntryAssets() {
     `./${config('bundleAssetsFileName')}`,
   );
 
+  console.log('assetsFilePath', assetsFilePath);
+
   if (!fs.existsSync(assetsFilePath)) {
     throw new Error(
       `We could not find the "${assetsFilePath}" file, which contains a list of the assets of the client bundle.  Please ensure that the client bundle has been built.`,
@@ -43,10 +45,12 @@ export default function getClientBundleEntryAssets() {
   }
 
   const readAssetsJSONFile = () => JSON.parse(fs.readFileSync(assetsFilePath, 'utf8'));
+  console.log('readAssetsJSONFile', readAssetsJSONFile());
   const assetsJSONCache = readAssetsJSONFile();
   if (typeof assetsJSONCache.index === 'undefined') {
     throw new Error('No asset data found for expected "index" entry chunk of client bundle.');
   }
   resultCache = assetsJSONCache.index;
+  console.log('resultCache', resultCache);
   return resultCache;
 }

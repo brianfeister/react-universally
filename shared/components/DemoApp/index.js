@@ -1,4 +1,3 @@
-import 'normalize.css/normalize.css';
 import './globals.css';
 
 import React, { Component } from 'react';
@@ -18,6 +17,11 @@ import AsyncPostsRoute from './AsyncPostsRoute';
 import AsyncAboutRoute from './AsyncAboutRoute';
 
 class DemoApp extends Component {
+  constructor(props) {
+    super(props);
+    this.styleManager = props.styleManager;
+    this.theme = props.theme;
+  }
   // Remove the server-side injected CSS.
   componentDidMount() {
     const jssStyles = document.getElementById('jss-server-side');
@@ -30,7 +34,7 @@ class DemoApp extends Component {
 
   // this.props.styleManager/theme are passed in via component properties,
   // @TODO - find a "non-magical" way to do this
-  render(styleManager = this.props.styleManager, theme = this.props.theme) {
+  render(styleManager = this.styleManager, theme = this.theme) {
     return (
       <Paper>
         <Helmet>
@@ -117,14 +121,28 @@ class DemoApp extends Component {
               global config if you have no intention of using milligram.
             */}
 
+          <style>{`
+            *, *:before, *:after {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+            }
+          `}</style>
+
           <link
             rel="stylesheet"
             href="//fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic"
           />
-          <link
+          {/*          <link
             rel="stylesheet"
             href="//cdn.rawgit.com/milligram/milligram/master/dist/milligram.min.css"
-          />
+          />*/}
+
+          {/*
+              NOTE: This injects and renders server-side styles needed by material-ui
+              to prevent a flash of unstyled content at the point where the rendering
+              started on the server is handed off to the client
+          */}
           <style id="jss-server-side" type="text/css">{styleManager.sheetsToString()}</style>
         </Helmet>
 

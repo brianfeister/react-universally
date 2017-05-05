@@ -43,16 +43,17 @@ const asyncComponentsRehydrateState = window.__ASYNC_COMPONENTS_REHYDRATE_STATE_
 // eslint-disable-next-line no-underscore-dangle
 const rehydrateState = window.__JOBS_REHYDRATE_STATE__;
 
-function renderApp(TheApp) {
-  const createStyleManager = () => MuiThemeProvider.createDefaultContext({
-    theme: createMuiTheme({
-      palette: createPalette({
-        primary: green,
-        accent: red,
-        type: 'dark',
+function renderApp(DemoApp) {
+  const createStyleManager = () =>
+    MuiThemeProvider.createDefaultContext({
+      theme: createMuiTheme({
+        palette: createPalette({
+          primary: green,
+          accent: red,
+          type: 'dark',
+        }),
       }),
-    }),
-  });
+    });
 
   // Create a styleManager instance.
   const { styleManager, theme } = createStyleManager();
@@ -66,7 +67,7 @@ function renderApp(TheApp) {
           <Provider store={store}>
             <BrowserRouter forceRefresh={!supportsHistory}>
               <MuiThemeProvider styleManager={styleManager} theme={theme}>
-                <TheApp styleManager={styleManager} theme={theme} />
+                <DemoApp styleManager={styleManager} theme={theme} />
               </MuiThemeProvider>
             </BrowserRouter>
           </Provider>

@@ -4,7 +4,7 @@ import Menu from './Menu';
 
 function Header() {
   return (
-    <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
+    <div>
       <Logo />
       <h1>React, Universally</h1>
       <strong>

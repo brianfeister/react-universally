@@ -93,6 +93,7 @@ const values = {
       'cdn.polyfill.io',
     ],
     styleSrc: [
+      './shared/components/DemoApp/globals.css',
       'cdn.rawgit.com/milligram/milligram/master/dist/milligram.min.css',
       'fonts.googleapis.com/css',
     ],

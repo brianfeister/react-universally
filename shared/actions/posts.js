@@ -9,7 +9,6 @@ function fetched(post) {
 }
 
 export function fetch(id) {
-  console.log('fetching!', id);
   return (dispatch, getState, { axios }) => {
     dispatch(fetching(id));
 
