@@ -33,6 +33,7 @@ const store = configureStore(
 // If the user's browser doesn't support the HTML5 history API then we
 // will force full page refreshes on each page change.
 const supportsHistory = 'pushState' in window.history;
+console.log('supportsHistory', supportsHistory);
 
 // Get any rehydrateState for the async components.
 // eslint-disable-next-line no-underscore-dangle
@@ -42,57 +43,46 @@ const asyncComponentsRehydrateState = window.__ASYNC_COMPONENTS_REHYDRATE_STATE_
 // eslint-disable-next-line no-underscore-dangle
 const rehydrateState = window.__JOBS_REHYDRATE_STATE__;
 
-/**
- * Renders the given React Application component.
- */
-class renderApp extends Component {
-  constructor(TheApp) {
-    super();
-    this.TheApp = TheApp;
-  }
+function renderApp(TheApp) {
+  const createStyleManager = () => MuiThemeProvider.createDefaultContext({
+    theme: createMuiTheme({
+      palette: createPalette({
+        primary: green,
+        accent: red,
+        type: 'dark',
+      }),
+    }),
+  });
+
+  // Create a styleManager instance.
+  const { styleManager, theme } = createStyleManager();
+
   // Firstly, define our full application component, wrapping the given
   // component app with a browser based version of react router.
-  app() {
-    function createStyleManager() {
-      return MuiThemeProvider.createDefaultContext({
-        theme: createMuiTheme({
-          palette: createPalette({
-            primary: green,
-            accent: red,
-            type: 'dark',
-          }),
-        }),
-      });
-    }
+  const app = (
+    <ReactHotLoader>
+      <AsyncComponentProvider rehydrateState={asyncComponentsRehydrateState}>
+        <JobProvider rehydrateState={rehydrateState}>
+          <Provider store={store}>
+            <BrowserRouter forceRefresh={!supportsHistory}>
+              <MuiThemeProvider styleManager={styleManager} theme={theme}>
+                <TheApp styleManager={styleManager} theme={theme} />
+              </MuiThemeProvider>
+            </BrowserRouter>
+          </Provider>
+        </JobProvider>
+      </AsyncComponentProvider>
+    </ReactHotLoader>
+  );
 
-    // // Create a styleManager instance.
-    const { styleManager, theme } = createStyleManager();
-
-    return (
-      <ReactHotLoader>
-        <AsyncComponentProvider rehydrateState={asyncComponentsRehydrateState}>
-          <JobProvider rehydrateState={rehydrateState}>
-            <Provider store={store}>
-              <BrowserRouter forceRefresh={!supportsHistory}>
-                <MuiThemeProvider styleManager={styleManager} theme={theme}>
-                  <TheApp styleManager={styleManager} theme={theme} />
-                </MuiThemeProvider>
-              </BrowserRouter>
-            </Provider>
-          </JobProvider>
-        </AsyncComponentProvider>
-      </ReactHotLoader>
-    );
-
-    // We use the react-async-component in order to support code splitting of
-    // our bundle output. It's important to use this helper.
-    // @see https://github.com/ctrlplusb/react-async-component
-    asyncBootstrapper(app).then(() => render(app, container));
-  }
+  // We use the react-async-component in order to support code splitting of
+  // our bundle output. It's important to use this helper.
+  // @see https://github.com/ctrlplusb/react-async-component
+  asyncBootstrapper(app).then(() => render(app, container));
 }
 
 // Execute the first render of our app.
-new renderApp(DemoApp);
+renderApp(DemoApp);
 
 // This registers our service worker for asset caching and offline support.
 // Keep this as the last item, just in case the code execution failed (thanks

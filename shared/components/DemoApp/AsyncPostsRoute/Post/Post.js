@@ -30,6 +30,7 @@ export function Post({ post }) {
 }
 
 function mapStateToProps(state, { match }) {
+  console.log('state', state, 'match', match);
   return {
     post: FromState.getPostById(state, match.params.id),
   };
@@ -68,7 +69,14 @@ export default compose(
       return fetchPost(match.params.id);
     },
     // Any time the post id changes we need to trigger the work.
-    shouldWorkAgain: (prevProps, nextProps) => prevProps.params.id !== nextProps.params.id,
+    // @TODO: when navigating between /posts/1 and /posts/2 the `prevProps`
+    // object does not have a `params.id` so this errors out. We should
+    // try to understand why, the main notable implementation change is the usage
+    // of the passed in styleManager={styleManager} theme={theme} for material-ui
+
+    // shouldWorkAgain: (prevProps, nextProps, jobStatus) => {
+    //   prevProps.params.id !== nextProps.params.id
+    // },
   }),
 )(Post);
 
